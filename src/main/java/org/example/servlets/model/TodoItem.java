@@ -10,4 +10,8 @@ public class TodoItem {
         this.date = date;
         this.description = description;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
