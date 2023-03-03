@@ -2,6 +2,7 @@ package org.example.servlets.repository;
 
 import org.example.servlets.model.TodoItem;
 
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,15 @@ public class TodoItemsRepository {
         todoItems.add(todoItem);
     }
 
-    public List<TodoItem> getAll() {
+    public List<TodoItem> getAll() throws ServletException {
         return todoItems;
+    }
+
+    public void deleteById(int id) {
+        TodoItem findTodoItem = todoItems.stream().filter(todoItem ->
+                todoItem.getId() == id
+        ).findFirst().get();
+
+        todoItems.remove(findTodoItem);
     }
 }

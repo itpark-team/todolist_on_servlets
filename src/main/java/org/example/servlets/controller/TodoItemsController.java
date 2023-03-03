@@ -27,36 +27,15 @@ public class TodoItemsController extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=UTF-8");
-
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Expose-Headers", "*");
-        if (request.getMethod().equals("OPTIONS")) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
-
         List<TodoItem> todoItems = todoItemsRepository.getAll();
         String todoItemsAsJson = gson.toJson(todoItems);
+
+        response.setContentType("application/json;charset=UTF-8");
 
         response.getWriter().println(todoItemsAsJson);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json;charset=UTF-8");
-
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Expose-Headers", "*");
-        if (request.getMethod().equals("OPTIONS")) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
 
         BufferedReader reader = request.getReader();
 
@@ -71,19 +50,16 @@ public class TodoItemsController extends HttpServlet {
 
         TodoItem todoItem = gson.fromJson(json, TodoItem.class);
         todoItemsRepository.addNew(todoItem);
-
-        response.getWriter().println("sss");
     }
 
-//    @Override
-//    protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
-//            throws ServletException, IOException {
-//        setAccessControlHeaders(resp);
-//        resp.setStatus(HttpServletResponse.SC_OK);
-//    }
-//
-//    private void setAccessControlHeaders(HttpServletResponse response) {
-//        response.setHeader("Access-Control-Allow-Origin", "*");
-//        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//    }
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        todoItemsRepository.deleteById(id);
+    }
 }
