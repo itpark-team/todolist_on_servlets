@@ -1,6 +1,9 @@
 package org.example.servlets.repository;
 
 import org.example.servlets.model.TodoItem;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import javax.servlet.ServletException;
 import java.util.ArrayList;
@@ -8,43 +11,36 @@ import java.util.Collections;
 import java.util.List;
 
 public class TodoItemsRepository {
-    private static TodoItemsRepository instance = null;
 
-    public static TodoItemsRepository getInstance() {
-        if (instance == null) {
-            instance = new TodoItemsRepository();
-        }
-        return instance;
-    }
+    private SessionFactory sessionFactory;
 
-    private List<TodoItem> todoItems;
-    private int globalId;
-
-    private TodoItemsRepository() {
-        todoItems = new ArrayList<>();
-        globalId = 0;
-
-        addNew(new TodoItem(0, "2003-10-25", "aaa"));
-        addNew(new TodoItem(0, "2005-12-21", "bbb"));
-        addNew(new TodoItem(0, "2018-01-24", "ccc"));
+    public TodoItemsRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     public void addNew(TodoItem todoItem) {
-        globalId++;
-        todoItem.setId(globalId);
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
 
-        todoItems.add(todoItem);
+        session.save(todoItem);
+
+        transaction.commit();
+        session.close();
     }
 
     public List<TodoItem> getAll() throws ServletException {
-        return todoItems;
+        return (List<TodoItem>) sessionFactory.openSession().createQuery("FROM TodoItem ORDER BY id").list();
     }
 
     public void deleteById(int id) {
-        TodoItem findTodoItem = todoItems.stream().filter(todoItem ->
-                todoItem.getId() == id
-        ).findFirst().get();
+        TodoItem todoItem = TodoItem.builder().id(id).build();
 
-        todoItems.remove(findTodoItem);
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        session.delete(todoItem);
+
+        transaction.commit();
+        session.close();
     }
 }

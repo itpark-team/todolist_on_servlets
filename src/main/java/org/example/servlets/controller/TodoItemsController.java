@@ -1,28 +1,28 @@
 package org.example.servlets.controller;
 
 import com.google.gson.Gson;
+import org.example.servlets.dbconnection.HibernateSession;
 import org.example.servlets.model.TodoItem;
 import org.example.servlets.repository.TodoItemsRepository;
+import org.hibernate.SessionFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 
-@WebServlet("/todoitems")
+//@WebServlet("/todoitems")
 public class TodoItemsController extends HttpServlet {
 
     private TodoItemsRepository todoItemsRepository;
     private Gson gson;
 
     public TodoItemsController() {
-        todoItemsRepository = TodoItemsRepository.getInstance();
+        SessionFactory sessionFactory = HibernateSession.getInstance().getSessionFactory();
+        todoItemsRepository = new TodoItemsRepository(sessionFactory);
         gson = new Gson();
     }
 

@@ -2,8 +2,40 @@
         "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 <web-app>
+
+    <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>org.example.servlets.filter.CorsFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>TodoItemsController</servlet-name>
+        <servlet-class>org.example.servlets.controller.TodoItemsController</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ExceptionHandler</servlet-name>
+        <servlet-class>org.example.servlets.exception.ExceptionHandler</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>TodoItemsController</servlet-name>
+        <url-pattern>/todoitems</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ExceptionHandler</servlet-name>
+        <url-pattern>/exceptionhandler</url-pattern>
+    </servlet-mapping>
+
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
         <location>/exceptionhandler</location>
     </error-page>
+
 </web-app>
